@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finagro.ai Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Improved navigation bar with better styling and spacing -->
+    <nav class="navbar-fixed">
+        <div class="navbar-container">
+            <div class="navbar-left">
+                <div class="navbar-logo" onclick="goHome()" title="Bosh sahifaga qaytish">
+                    <span class="fintext font-bold text-gray-900">Finagro</span>
+                </div>
+            </div>
+
+            <!-- <div class="navbar-center">
+                <a href="index.html" class="navbar-link" title="Asosiy dashboarda qaytish">
+                    Bosh Menyu
+                </a>
+            </div> -->
+
+            <div class="navbar-right">
+                <a href="index.html" class="navbar-link" title="Asosiy dashboarda qaytish">
+                    Bosh sahifa
+                </a>
+                <a href="https://agrobank.uz" target="_blank" class="navbar-link" title="Agrobank saytiga o'tish">
+                    Bank Bilan Bog'lanish
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard home view with 4 modules grid -->
+    <div id="dashboard-home" class="dashboard-home">
+        <div class="home-header">
+            <h1>Finagro Dashboard</h1>
+            <p>Kerakli bo'limni tanlang va boshlang</p>
+        </div>
+        <!-- 4 ta modul kartasi bir qatorda ko'rinishi uchun grid updated -->
+        <div class="modules-grid">
+            <div class="module-card" onclick="openModule('kredit')">
+                <div class="module-icon">💰</div>
+                <h3>Hosildan Kredit</h3>
+                <p>Kredit hajmini hisoblash</p>
+            </div>
+            <div class="module-card" onclick="openModule('kasallik')">
+                <div class="module-icon">🛡️</div>
+                <h3>KasallikShield</h3>
+                <p>O'simtalarning kasalliklari</p>
+            </div>
+            <div class="module-card" onclick="openModule('sugarish')">
+                <div class="module-icon">🌱</div>
+                <h3>O'g'it & Sug'orish</h3>
+                <p>Optimal rejalashtirish</p>
+            </div>
+            <div class="module-card" onclick="openModule('chat')">
+                <div class="module-icon">💬</div>
+                <h3>Finagro Chat</h3>
+                <p>AI assistent bilan gaplashing</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard layout with sidebar and main content for modules -->
+    <div id="dashboard-container" class="dashboard-container hidden">
+        <!-- Sidebar with toggle button -->
+        <aside id="sidebar" class="sidebar closed">
+            <div class="sidebar-header">
+                <button id="sidebarToggle" class="sidebar-toggle" onclick="toggleSidebar()" title="Yopish">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="sidebar-link active" data-module="kredit" onclick="switchModule('kredit')">
+                    <span class="icon">💰</span>
+                    <span class="text">Hosildan Kredit</span>
+                </button>
+                <button class="sidebar-link" data-module="kasallik" onclick="switchModule('kasallik')">
+                    <span class="icon">🛡️</span>
+                    <span class="text">KasallikShield</span>
+                </button>
+                <button class="sidebar-link" data-module="sugarish" onclick="switchModule('sugarish')">
+                    <span class="icon">🌱</span>
+                    <span class="text">O'g'it & Sug'orish</span>
+                </button>
+                <button class="sidebar-link" data-module="chat" onclick="switchModule('chat')">
+                    <span class="icon">💬</span>
+                    <span class="text">Finagro Chat</span>
+                </button>
+            </nav>
+
+            <!-- Username and logout at sidebar bottom -->
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div id="userInitial" class="user-avatar"></div>
+                    <span id="userName" class="user-name">Fermer</span>
+                </div>
+                <button onclick="logout()" class="sidebar-logout-btn">Chiqish</button>
+            </div>
+        </aside>
+
+        <!-- Main content area -->
+        <main class="dashboard-main">
+            <!-- Module 1: Credit Calculator -->
+            <div id="module-kredit" class="module-content">
+                <div class="module-header">
+                    <h2>Hosildan Kredit Hisoblash</h2>
+                    <p>Yer hajmi, ekin turi va viloyat asosida kredit summasini aniqlang</p>
+                </div>
+                <!-- Form inputlar API parametrlariga mos qilindi -->
+                <form id="creditForm" class="module-form">
+                    <div class="form-group">
+                        <label for="yer">Yer hajmi (ha):</label>
+                        <input type="number" id="yer" placeholder="0.5" step="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ekin">Ekin turi:</label>
+                        <select id="ekin" required>
+                            <option value="">Tanlang</option>
+                            <option value="galla">Galla</option>
+                            <option value="paxta">Paxta</option>
+                            <option value="pomidor">Pomidor</option>
+                            <option value="kartoshka">Kartoshka</option>
+                            <option value="sabzi">Sabzi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="viloyat">Viloyat:</label>
+                        <select id="viloyat" required>
+                            <option value="">Tanlang</option>
+                            <option value="toshkent">Toshkent</option>
+                            <option value="samarqand">Samarqand</option>
+                            <option value="jizzax">Jizzax</option>
+                            <option value="andijon">Andijon</option>
+                            <option value="fargona">Fargona</option>
+                            <option value="namangan">Namangan</option>
+                            <option value="buxoro">Buxoro</option>
+                            <option value="qashqadaryo">Qashqadaryo</option>
+                            <option value="surxondaryo">Surxondaryo</option>
+                            <option value="navoiy">Navoiy</option>
+                            <option value="xorazm">Xorazm</option>
+                            <option value="qoraqalpogiston">Qoraqalpog'iston</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="zichlik">Ekin zichligi (%):</label>
+                        <input type="number" id="zichlik" placeholder="100" min="1" max="200" step="1" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Hisoblash</button>
+                </form>
+
+                <!-- Results -->
+                <div id="creditResult" class="module-result hidden">
+                    <div class="result-card">
+                        <h3>Taxminiy Hosil</h3>
+                        <p id="resultHosil">0</p>
+                        <span>tonna</span>
+                    </div>
+                    <div class="result-card">
+                        <h3>Taxminiy Daromad</h3>
+                        <p id="resultDaromad">0</p>
+                        <span>so'm</span>
+                    </div>
+                    <div class="result-card">
+                        <h3>Kredit Miqdori</h3>
+                        <p id="resultKredit">0</p>
+                        <span>so'm</span>
+                    </div>
+                    <!-- Bank contact button in credit results -->
+                    <button onclick="contactBank()" class="btn-bank">Agrobank bilan bog'lanish</button>
+                </div>
+            </div>
+
+            <!-- Module 2: Disease Shield (Coming Soon) -->
+            <div id="module-kasallik" class="module-content hidden">
+                <div class="module-header">
+                    <h2>KasallikShield</h2>
+                    <p>O'simtalarning kasalliklari haqida ma'lumot oling</p>
+                </div>
+                <div class="coming-soon">
+                    <p>Bu bo'lim tez orada qo'shiladi...</p>
+                </div>
+            </div>
+
+            <!-- Module 3: Fertilizer & Irrigation (Coming Soon) -->
+            <div id="module-sugarish" class="module-content hidden">
+                <div class="module-header">
+                    <h2>O'g'it & Sug'orish Rejasi</h2>
+                    <p>Optimal o'g'it va sug'orish tavsiyalari</p>
+                </div>
+                <div class="coming-soon">
+                    <p>Bu bo'lim tez orada qo'shiladi...</p>
+                </div>
+            </div>
+
+            <!-- Module 4: Chat Assistant -->
+            <div id="module-chat" class="module-content hidden">
+                <div class="module-header">
+                    <h2>Finagro.ai Chat Assistant</h2>
+                    <p>Agro va banking masalalari bo'yicha savol sorang</p>
+                </div>
+                <div class="chat-container">
+                    <div id="chatBox" class="chat-box">
+                        <div class="chat-message bot-message">
+                            <div class="message-content">Salom! Men sizga agro va banking masalalari bo'yicha yordam berishga tayyorman. Savol sorang!</div>
+                        </div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chatInput" placeholder="Savol sorang..." class="chat-input">
+                        <button onclick="sendMessage()" class="btn-send">Yuborish</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Overlay for mobile sidebar -->
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <script src="dashboard-script.js"></script>
+</body>
+</html>

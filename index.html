@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finagro.ai - Agro Kredit & Banking AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="font-sans bg-white">
+    <!-- Navigation Bar -->
+    <nav class="navbar-fixed">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 bg-gradient-to-br to-emerald-500 rounded-lg flex items-center justify-center">
+                    <img src="./image/IMAGE 2025-11-27 18:18:04.jpg" alt="">
+                </div>
+                <span class="fintext font-bold text-gray-900">Finagro</span>
+            </div>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#home" class="navbar-link">Bosh sahifa</a>
+                <a href="#about" class="navbar-link">Biz haqimizda</a>
+                <a href="#contact" class="navbar-link">Aloqa</a>
+                <a href="https://agrobank.uz" target="_blank" class="navbar-link font-semibold text-emerald-600">Agrobank</a>
+            </div>
+
+            <!-- Auth Buttons -->
+            <div class="hidden md:flex gap-2">
+                <button onclick="openSignIn()" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition">Kirish</button>
+                <a href="dashboard.html" class="px-6 py-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded-lg hover:shadow-lg transition font-semibold">
+                    Boshlash
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button class="md:hidden text-gray-700" id="menuToggle">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden fixed top-16 left-0 right-0 bg-white shadow-lg z-40 md:hidden">
+        <div class="flex flex-col p-4 gap-3">
+            <a href="#home" class="py-2 px-3 hover:bg-gray-100 rounded">Bosh sahifa</a>
+            <a href="#about" class="py-2 px-3 hover:bg-gray-100 rounded">Haqida</a>
+            <a href="#contact" class="py-2 px-3 hover:bg-gray-100 rounded">Aloqa</a>
+            <button onclick="openSignIn()" class="py-2 px-3 text-left hover:bg-gray-100 rounded">Kirish</button>
+            <a href="dashboard.html" class="py-2 px-3 bg-gradient-to-r from-emerald-600 to-green-600 text-white rounded font-semibold text-center">
+                Boshlash
+            </a>
+        </div>
+    </div>
+
+<!-- Hero Section -->
+<section id="home" class="hero-section h-[80dvh] flex items-center">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+
+        <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
+            Fermerlar Uchun Zamonaviy AI Yordamchi Platforma
+        </h1>
+
+        <p class="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto mb-10">
+            Finagro — hosilni hisoblaydi, kasallikni aniqlaydi, sug‘orishni optimallashtiradi 
+            va Agro kreditlarini taxminiy hisobini taqdim etadi!.
+        </p>
+
+        <div class="flex flex-col sm:flex-row justify-center gap-5">
+            <a href="dashboard.html" 
+               class="px-10 py-4 bg-gradient-to-r from-emerald-600 to-green-600 
+                      text-white rounded-xl text-lg font-semibold shadow-md 
+                      hover:shadow-xl transition">
+                Boshlash
+            </a>
+
+            <a href="#about" 
+               class="px-10 py-4 border-2 border-gray-400 
+                      text-gray-700 rounded-xl text-lg font-semibold 
+                      hover:border-gray-600 transition">
+                Batafsil Ma’lumot
+            </a>
+        </div>
+
+    </div>
+</section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-12 text-center">Finagro AI Haqida</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-24">
+                <div>
+                    <h3 class="text-3xl font-bold text-gray-900 mb-4">Fermerlarning eng yaqin yordamchisi</h3>
+                    <p class="textP text-gray-600 mb-4">
+                        Finagro.ai Agrobank bilan hamkorlikda AI500 Hakatonda yaratilgan platforma bo'lib, fermerlarning agro va banking muammolariga AI model yordamida yechim taklif etadi. 
+                    </p>
+                    <p class="textP text-gray-600">
+                        Finagro fermerlarning ekin hosilini, foydani va kreditini hisoblashdan tashqari, kasallikni aniqlash, sug'orish jadvali va o'g'it miqdorini optimallashtirish kabi muhim xizmatlarni taqdim etamiz. Shu bilan birga Finagro.chat bot orqali istalgan agro savolga javob oling!
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="bg-white p-5 rounded-lg shadow-md border-l-4 border-emerald-600">
+                        <h4 class="text-2xl font-bold text-gray-900 mb-1">Maqsadimiz</h4>
+                        <p class="text-gray-600 text-sm">Fermerlarning moliyaviy va texnologik imkoniyatlarini kengaytirish orqali qishloq xojaligini modernizatsiya qilish, va kunlik agro savollarga javob berish orqali fermerlar bilimini oshirish.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow-md border-l-4 border-emerald-600">
+                        <h4 class="text-2xl font-bold text-gray-900 mb-1">Vision</h4>
+                        <p class="text-gray-600 text-sm">O'zbekistonning qishloq xojaligini rivojlantirish uchun yetakchi AI platformasi bo'lish, va fermerlarning ishini yengillashtirish va takomillashtirishga yordam berish, va savollariga javob topish.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="text-3xl font-bold text-gray-900 mb-8 text-center">Asosiy Xususiyatlar</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="feature-card">
+                    <div class="text-4xl mb-3">📊</div>
+                    <h4 class="font-bold text-gray-900 mb-2">Hosildan Kredit</h4>
+                    <p class="text-sm text-gray-600">AI orqali hosil, foyda va kredit miqdorini sekund ichida hisoblang</p>
+                </div>
+                <div class="feature-card">
+                    <div class="text-4xl mb-3">🏥</div>
+                    <h4 class="font-bold text-gray-900 mb-2">KasallikShield</h4>
+                    <p class="text-sm text-gray-600">Ekin kasalligini AI orqali aniqlash va davolash tavsiyalari</p>
+                </div>
+                <div class="feature-card">
+                    <div class="text-4xl mb-3">💧</div>
+                    <h4 class="font-bold text-gray-900 mb-2">O'g'it & Sug'orish</h4>
+                    <p class="text-sm text-gray-600">Optimal o'g'it miqdori va sug'orish jadvalini o'z vaqtida bilish</p>
+                </div>
+                <div class="feature-card">
+                    <div class="text-4xl mb-3">💬</div>
+                    <h4 class="font-bold text-gray-900 mb-2">Finagro Chat</h4>
+                    <p class="text-sm text-gray-600">24/7 AI yordamchi O'zbekchada ishlaydi - savol sorang, javob oling!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-12 text-center">Biz Bilan Bog'lanish</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gradient-to-br from-emerald-50 to-green-50 p-6 rounded-lg shadow-md text-center border-t-4 border-emerald-600">
+                    <div class="text-4xl mb-4">📞</div>
+                    <h4 class="font-bold text-gray-900 mb-2">Telefon</h4>
+                    <p class="text-gray-900 font-semibold">+998 90 127 00 84</p>
+                    <p class="text-sm text-gray-600">Conordev</p>
+                </div>
+                <div class="bg-gradient-to-br from-emerald-50 to-green-50 p-6 rounded-lg shadow-md text-center border-t-4 border-emerald-600">
+                    <div class="text-4xl mb-4">✉️</div>
+                    <h4 class="font-bold text-gray-900 mb-2">Email</h4>
+                    <p class="text-gray-900 font-semibold">Conordev0084@gmail.com</p>
+                    <p class="text-sm text-gray-600">24 soat ichida javob</p>
+                </div>
+                <div class="bg-gradient-to-br from-emerald-50 to-green-50 p-6 rounded-lg shadow-md text-center border-t-4 border-emerald-600">
+                    <div class="text-4xl mb-4">🏢</div>
+                    <h4 class="font-bold text-gray-900 mb-2">Manzil</h4>
+                    <p class="text-gray-900 font-semibold">Toshkent, Sergeli</p>
+                    <p class="text-sm text-gray-600">PDP University</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-2xl font-bold">Finagro </span>
+                    </div>
+                    <p class="text-gray-400 text-sm">AI yezimizdagi fermerlarning bankka yaqin dostiga aylanish</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Tezkor Havolalar</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#home" class="hover:text-white transition">Bosh sahifa</a></li>
+                        <li><a href="#about" class="hover:text-white transition">Haqida</a></li>
+                        <li><a href="dashboard.html" class="hover:text-white transition">Dashboard</a></li>
+                        <li><a href="#contact" class="hover:text-white transition">Aloqa</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Hamkorlar</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="https://agrobank.uz" target="_blank" class="hover:text-white transition">Agrobank</a></li>
+                        <li><a href="#" class="hover:text-white transition">AI500 Hakaton</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-8 text-center text-gray-400 text-sm">
+                <p>&copy; 2025 Finagro.ai. Barcha huquqlar himoyalangan.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Sign In Modal -->
+    <div id="signInModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeSignIn()">&times;</span>
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Akkauntga Kirish</h2>
+            <form id="signInForm" onsubmit="handleSignIn(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">Email</label>
+                    <input type="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600" placeholder="example@gmail.com">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Parol</label>
+                    <input type="password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600" placeholder="Parolingiz">
+                </div>
+                <button type="submit" class="w-full px-4 py-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-lg hover:shadow-lg transition">
+                    Kirish
+                </button>
+            </form>
+            <p class="text-center text-gray-600 mt-4">
+                Akkaunt yo'qmi? <a href="#" onclick="switchToSignUp()" class="text-emerald-600 font-semibold">Ro'yxatdan o'tish</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Sign Up Modal -->
+    <div id="signUpModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeSignUp()">&times;</span>
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Akkaunt Yaratish</h2>
+            <form id="signUpForm" onsubmit="handleSignUp(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">To'liq Ismi</label>
+                    <input type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600" placeholder="Ismingiz">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">Email</label>
+                    <input type="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600" placeholder="example@gmail.com">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Parol</label>
+                    <input type="password" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-600" placeholder="Qoida: 8+ ta belgi">
+                </div>
+                <button type="submit" class="w-full px-4 py-2 bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold rounded-lg hover:shadow-lg transition">
+                    Ro'yxatdan o'tish
+                </button>
+            </form>
+            <p class="text-center text-gray-600 mt-4">
+                Allaqachon akkaunt bor? <a href="#" onclick="switchToSignIn()" class="text-emerald-600 font-semibold">Kirish</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
