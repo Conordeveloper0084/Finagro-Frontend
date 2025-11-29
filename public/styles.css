@@ -74,7 +74,6 @@ HTML{
 }
 
 
-
 .navbar-center {
   display: flex;
   align-items: center;
@@ -135,6 +134,14 @@ HTML{
   color: #6b7280;
   font-size: 22px;
 }
+
+  .main_text{
+    font-size: 36px;
+  }
+
+  .main_p{
+    font-size: 20px;
+  }
 
 /* Enlarged module cards grid for better display */
 /* 4 ta modul kartasi bir qatorda ko'rinishi uchun grid updated */
@@ -939,6 +946,11 @@ HTML{
   .dashboard-main {
     padding: 15px;
   }
+
+  .chat-input-area {
+  flex-direction: column;
+  padding: 15px 0px;
+}
 
   .main_text{
     font-size: 28px;
