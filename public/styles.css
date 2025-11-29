@@ -851,6 +851,22 @@ HTML{
     gap: 20px;
   }
 
+  .navbar-right{
+    display: none;
+  }
+
+  .main_text{
+    font-size: 36px;
+  }
+
+  .main_p{
+    font-size: 20px;
+  }
+
+  .navbar-container{
+    justify-content: center;
+  }
+
   .dashboard-container {
     height: calc(100vh - 70px);
   }
@@ -924,6 +940,18 @@ HTML{
     padding: 15px;
   }
 
+  .main_text{
+    font-size: 28px;
+  }
+
+  .main_p{
+    font-size: 16px;
+  }
+
+  .navbar-container{
+    justify-content: center;
+  }
+
   .module-content {
     padding: 20px;
   }
@@ -948,6 +976,10 @@ HTML{
   .module-card {
     padding: 30px 20px;
     min-height: 200px;
+  }
+
+  .navbar-right{
+    display: none;
   }
 }
 
