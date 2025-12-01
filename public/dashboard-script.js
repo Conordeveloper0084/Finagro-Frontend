@@ -33,26 +33,32 @@ document.getElementById("menuToggle")?.addEventListener("click", () => {
 // ========================
 // MODULE SWITCHING FIXED
 // ========================
-function switchModule(moduleName, event) {
-  // Hide all sections
-  document.querySelectorAll(".module-content").forEach((mod) => mod.classList.add("hidden"));
+function switchModule(moduleName) {
+  // Hide all modules
+  document.querySelectorAll(".module-content").forEach((mod) => {
+    mod.classList.add("hidden")
+  })
 
-  // Remove active class from buttons
-  document.querySelectorAll(".module-btn").forEach((btn) => btn.classList.remove("active"));
+  // Remove active class from all sidebar buttons
+  document.querySelectorAll(".sidebar-link").forEach((btn) => {
+    btn.classList.remove("active")
+  })
 
   // Show selected module
-  const moduleElement = document.getElementById(`module-${moduleName}`);
-  if (moduleElement) moduleElement.classList.remove("hidden");
-
-  // Highlight active button
-  if (event) {
-    event.target.closest(".module-btn").classList.add("active");
+  const moduleElement = document.getElementById(`module-${moduleName}`)
+  if (moduleElement) {
+    moduleElement.classList.remove("hidden")
   }
 
-  // Smooth scroll
-  moduleElement?.scrollIntoView({ behavior: "smooth" });
-}
+  // Highlight the clicked button
+  const activeBtn = document.querySelector(`.sidebar-link[data-module="${moduleName}"]`)
+  if (activeBtn) activeBtn.classList.add("active")
 
+  // Scroll to module
+  moduleElement?.scrollIntoView({ behavior: "smooth", block: "start" })
+
+  console.log("[v0] Module switched:", moduleName)
+}
 
 // ========================
 // CREDIT CALCULATOR (FIXED KEYS)
