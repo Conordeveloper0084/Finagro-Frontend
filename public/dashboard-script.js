@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8000"
+const API_URL = "https://finagro-api.onrender.com"
 const STORAGE_KEY = "finagro_user"
 
 const usersData = {
