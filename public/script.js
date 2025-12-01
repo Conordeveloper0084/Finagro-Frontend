@@ -189,8 +189,12 @@ function switchToSignUp() {
 function handleSignIn(event) {
   event.preventDefault()
   const form = event.target
-  const email = form.querySelector('input[type="email"]').value
-  const password = form.querySelector('input[type="password"]').value
+  const formData = new FormData(form)
+  const email = formData.get("email")
+  const password = formData.get("password")
+
+  console.log("[v0] Login attempt:", { email, password })
+  console.log("[v0] API URL:", `${API_URL}/auth/login`)
 
   fetch(`${API_URL}/auth/login`, {
     method: "POST",
@@ -198,6 +202,7 @@ function handleSignIn(event) {
     body: JSON.stringify({ email, password }),
   })
     .then((response) => {
+      console.log("[v0] Response status:", response.status)
       if (!response.ok) {
         return response.json().then((data) => {
           throw new Error(data.detail || "Login xatosi!")
@@ -230,9 +235,13 @@ function handleSignIn(event) {
 function handleSignUp(event) {
   event.preventDefault()
   const form = event.target
-  const name = form.querySelector('input[type="text"]').value
-  const email = form.querySelector('input[type="email"]').value
-  const password = form.querySelector('input[type="password"]').value
+  const formData = new FormData(form)
+  const name = formData.get("name")
+  const email = formData.get("email")
+  const password = formData.get("password")
+
+  console.log("[v0] Signup attempt:", { name, email, password })
+  console.log("[v0] API URL:", `${API_URL}/auth/signup`)
 
   fetch(`${API_URL}/auth/signup`, {
     method: "POST",
@@ -240,6 +249,7 @@ function handleSignUp(event) {
     body: JSON.stringify({ name, email, password }),
   })
     .then((response) => {
+      console.log("[v0] Response status:", response.status)
       if (!response.ok) {
         return response.json().then((data) => {
           throw new Error(data.detail || "Signup xatosi!")
