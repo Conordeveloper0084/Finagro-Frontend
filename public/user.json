@@ -1,0 +1,11 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Test Fermer",
+      "email": "test@gmail.com",
+      "password": "password123",
+      "registrationTime": "2025-01-01T00:00:00.000Z"
+    }
+  ]
+}
