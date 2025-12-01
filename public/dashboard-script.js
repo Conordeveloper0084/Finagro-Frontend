@@ -1,75 +1,69 @@
-const API_URL = "https://finagro-ai.onrender.com";
+const API_URL = "http://localhost:8000"
 const STORAGE_KEY = "finagro_user"
 
-// Check authentication on page load
-window.addEventListener("DOMContentLoaded", () => {
-  const user = JSON.parse(localStorage.getItem(STORAGE_KEY))
+const usersData = {
+  users: [
+    {
+      id: 1,
+      name: "Test Foydalanuvchi",
+      email: "test@gmail.com",
+      password: "password123",
+      registrationTime: "2025-01-01T00:00:00.000Z",
+    },
+  ],
+}
 
-  if (!user) {
-    alert("Avval ro'yxatdan o'tishingiz kerak!")
-    window.location.href = "index.html"
-  } else {
-    document.getElementById("userName").textContent = user.name || "Fermer"
-    document.getElementById("userInitial").textContent = (user.name || "F").charAt(0).toUpperCase()
-    document.getElementById("sidebarFooterUserName").textContent = user.name || "Fermer"
-  }
+// Toast notification system - chiroyli xabarlar
+function showToast(message, type = "success") {
+  const toast = document.createElement("div")
+  toast.className = `toast toast-${type}`
+  toast.innerHTML = `
+    <div class="toast-content">
+      <span>${message}</span>
+      <button class="toast-close" onclick="this.parentElement.parentElement.remove()">×</button>
+    </div>
+  `
 
-  switchModule("kredit")
+  document.body.appendChild(toast)
+
+  // 5 soniya keyin yo'qoladi
+  setTimeout(() => {
+    toast.remove()
+  }, 5000)
+}
+
+// Menu Toggle
+document.getElementById("menuToggle")?.addEventListener("click", () => {
+  const menu = document.getElementById("mobileMenu")
+  menu.classList.toggle("hidden")
 })
 
-function openModule(moduleName) {
-  document.getElementById("dashboard-home").classList.add("hidden")
-  document.getElementById("dashboard-container").classList.remove("hidden")
-  switchModule(moduleName)
-}
-
-function goHome() {
-  document.getElementById("dashboard-home").classList.remove("hidden")
-  document.getElementById("dashboard-container").classList.add("hidden")
-}
-
-function toggleSidebar() {
-  const sidebar = document.getElementById("sidebar")
-  sidebar.classList.toggle("closed")
-}
-
-function closeSidebar() {
-  const sidebar = document.getElementById("sidebar")
-  const overlay = document.getElementById("sidebarOverlay")
-  sidebar.classList.remove("show")
-  overlay.classList.remove("show")
-}
-
-function closeSidebarOnMobile() {
-  if (window.innerWidth <= 768) {
-    closeSidebar()
-  }
-}
-
-function logout() {
-  localStorage.removeItem(STORAGE_KEY)
-  alert("Chiqishdan muvaffaq oldingiz!")
-  window.location.href = "index.html"
-}
-
+// Module Switching
 function switchModule(moduleName) {
+  // Hide all modules
   document.querySelectorAll(".module-content").forEach((mod) => {
     mod.classList.add("hidden")
   })
 
-  document.querySelectorAll(".sidebar-link").forEach((btn) => {
+  // Remove active class from all buttons
+  document.querySelectorAll(".module-btn").forEach((btn) => {
     btn.classList.remove("active")
   })
 
+  // Show selected module
   const moduleElement = document.getElementById(`module-${moduleName}`)
   if (moduleElement) {
     moduleElement.classList.remove("hidden")
   }
 
-  document.querySelector(`[data-module="${moduleName}"]`)?.classList.add("active")
+  // Add active class to clicked button
+  event.target.closest(".module-btn").classList.add("active")
+
+  // Scroll to module
+  moduleElement?.scrollIntoView({ behavior: "smooth", block: "start" })
 }
 
-// Credit Calculator - Integrated with API
+// Credit Calculator
 document.getElementById("creditForm")?.addEventListener("submit", async (e) => {
   e.preventDefault()
 
@@ -83,33 +77,31 @@ document.getElementById("creditForm")?.addEventListener("submit", async (e) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        yer_maydoni_ha: yer,
-        ekin_turi: ekin,
-        viloyat: vil,
+        yer: yer,
+        ekin: ekin,
+        vil: vil,
         zichlik: zichlik,
       }),
     })
 
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`)
-    }
-
     const data = await response.json()
 
+    // Format numbers
     const formatNumber = (num) => new Intl.NumberFormat("uz-UZ").format(Math.round(num))
 
-    document.getElementById("resultHosil").textContent = formatNumber(data.taxminiy_hosil_t || 0)
-    document.getElementById("resultDaromad").textContent = formatNumber(data.taxminiy_daromad || 0)
-    document.getElementById("resultKredit").textContent = formatNumber(data.kredit_miqdori || 0)
+    document.getElementById("resultHosil").textContent = formatNumber(data.taxminiy_hosil_t)
+    document.getElementById("resultDaromad").textContent = formatNumber(data.taxminiy_daromad)
+    document.getElementById("resultKredit").textContent = formatNumber(data.kredit_miqdori)
 
     document.getElementById("creditResult").classList.remove("hidden")
+    console.log("[v0] Credit calculation successful:", data)
   } catch (error) {
-    alert("Xatolik yuz berdi. Qayta urinib ko'ring. Backend ishlamayotgan bo'lishi mumkin.")
-    console.error("Credit calculation error:", error)
+    alert("Xatolik yuz berdi. Qayta urinib ko'ring.")
+    console.error("[v0] Credit calculation error:", error)
   }
 })
 
-// Chat Functionality - Integrated with API
+// Chat Functionality
 async function sendMessage() {
   const chatInput = document.getElementById("chatInput")
   const message = chatInput.value.trim()
@@ -119,25 +111,11 @@ async function sendMessage() {
   // Add user message to chat
   const chatBox = document.getElementById("chatBox")
   const userMessageDiv = document.createElement("div")
-  userMessageDiv.className = "chat-message user-message"
-  userMessageDiv.innerHTML = `<div class="message-content">${message}</div>`
+  userMessageDiv.className = "flex justify-end"
+  userMessageDiv.innerHTML = `<div class="bg-gradient-to-r from-green-500 to-blue-600 text-white px-4 py-2 rounded-lg max-w-xs rounded-br-none">${message}</div>`
   chatBox.appendChild(userMessageDiv)
 
   chatInput.value = ""
-  chatBox.scrollTop = chatBox.scrollHeight
-
-  const loadingDiv = document.createElement("div")
-  loadingDiv.className = "chat-message bot-message"
-  loadingDiv.id = "loadingIndicator"
-  loadingDiv.innerHTML = `<div class="message-content">
-    <div class="typing-indicator">
-      <span class="typing-text">Javob tayyorlanmoqda</span>
-      <div class="typing-dot"></div>
-      <div class="typing-dot"></div>
-      <div class="typing-dot"></div>
-    </div>
-  </div>`
-  chatBox.appendChild(loadingDiv)
   chatBox.scrollTop = chatBox.scrollHeight
 
   try {
@@ -147,42 +125,30 @@ async function sendMessage() {
       body: JSON.stringify({ message: message }),
     })
 
-    const loadingElement = document.getElementById("loadingIndicator")
-    if (loadingElement) {
-      loadingElement.remove()
-    }
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`)
-    }
-
     const data = await response.json()
 
+    // Add AI response
     const aiMessageDiv = document.createElement("div")
-    aiMessageDiv.className = "chat-message bot-message"
-    aiMessageDiv.innerHTML = `<div class="message-content">${data.reply}</div>`
+    aiMessageDiv.className = "flex justify-start"
+    aiMessageDiv.innerHTML = `<div class="bg-gray-200 text-gray-900 px-4 py-2 rounded-lg max-w-xs rounded-bl-none">${data.reply}</div>`
     chatBox.appendChild(aiMessageDiv)
 
     // Show bank button if needed
-    // if (data.bank_button) {
-    //   const bankBtnDiv = document.createElement("div")
-    //   bankBtnDiv.className = "flex justify-start mt-2"
-    //   bankBtnDiv.innerHTML = `<button onclick="contactBank()" class="px-4 py-2 bg-gradient-to-r from-emerald-600 to-green-600 text-red rounded-lg text-sm font-semibold hover:shadow-lg transition">Agrobank bilan bog'lanish</button>`
-    //   chatBox.appendChild(bankBtnDiv)
-    // }
-
-    chatBox.scrollTop = chatBox.scrollHeight
-  } catch (error) {
-    const loadingElement = document.getElementById("loadingIndicator")
-    if (loadingElement) {
-      loadingElement.remove()
+    if (data.bank_button) {
+      const bankBtnDiv = document.createElement("div")
+      bankBtnDiv.className = "flex justify-start mt-2"
+      bankBtnDiv.innerHTML = `<button onclick="contactBank()" class="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-lg text-sm font-semibold hover:shadow-lg transition">Agrobank bilan bog'lanish</button>`
+      chatBox.appendChild(bankBtnDiv)
     }
 
+    chatBox.scrollTop = chatBox.scrollHeight
+    console.log("[v0] Chat message sent successfully")
+  } catch (error) {
     const errorDiv = document.createElement("div")
-    errorDiv.className = "chat-message bot-message"
-    errorDiv.innerHTML = `<div class="message-content" style="background-color: #fee; color: #c00;">Xatolik yuz berdi. Qayta urinib ko'ring.</div>`
+    errorDiv.className = "flex justify-start"
+    errorDiv.innerHTML = `<div class="bg-red-100 text-red-700 px-4 py-2 rounded-lg max-w-xs">Xatolik yuz berdi. Qayta urinib ko'ring.</div>`
     chatBox.appendChild(errorDiv)
-    console.error("Chat error:", error)
+    console.error("[v0] Chat error:", error)
   }
 }
 
@@ -191,6 +157,133 @@ document.getElementById("chatInput")?.addEventListener("keypress", (e) => {
   if (e.key === "Enter") {
     sendMessage()
   }
+})
+
+// Auth Functions
+function openSignIn() {
+  document.getElementById("signInModal").classList.remove("hidden")
+}
+
+function closeSignIn() {
+  document.getElementById("signInModal").classList.add("hidden")
+}
+
+function openSignUp() {
+  document.getElementById("signUpModal").classList.remove("hidden")
+}
+
+function closeSignUp() {
+  document.getElementById("signUpModal").classList.add("hidden")
+}
+
+function switchToSignIn() {
+  closeSignUp()
+  openSignIn()
+}
+
+function switchToSignUp() {
+  closeSignIn()
+  openSignUp()
+}
+
+function handleSignIn(event) {
+  event.preventDefault()
+  const form = event.target
+  const email = form.querySelector('input[type="email"]').value
+  const password = form.querySelector('input[type="password"]').value
+
+  console.log("[v0] Login attempt:", { email, password })
+  console.log("[v0] API URL:", `${API_URL}/auth/login`)
+
+  fetch(`${API_URL}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  })
+    .then((response) => {
+      console.log("[v0] Response status:", response.status)
+      if (!response.ok) {
+        return response.json().then((data) => {
+          throw new Error(data.detail || "Login xatosi!")
+        })
+      }
+      return response.json()
+    })
+    .then((data) => {
+      // User ma'lumotlarini localStorage ga saqlash
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user))
+      console.log("[v0] User signed in:", data.user)
+
+      showToast("✅ Muvaffaqiyatli kirdingiz! Dashboard ga o'ting...", "success")
+
+      // 1 soniya keyin dashboard ga o'tish
+      setTimeout(() => {
+        window.location.href = "dashboard.html"
+      }, 1000)
+
+      // Modal yopish
+      closeSignIn()
+      form.reset()
+    })
+    .catch((error) => {
+      console.error("[v0] Login error:", error)
+      showToast(`❌ ${error.message}`, "error")
+    })
+}
+
+function handleSignUp(event) {
+  event.preventDefault()
+  const form = event.target
+  const name = form.querySelector('input[type="text"]').value
+  const email = form.querySelector('input[type="email"]').value
+  const password = form.querySelector('input[type="password"]').value
+
+  console.log("[v0] Signup attempt:", { name, email, password })
+  console.log("[v0] API URL:", `${API_URL}/auth/signup`)
+
+  fetch(`${API_URL}/auth/signup`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, email, password }),
+  })
+    .then((response) => {
+      console.log("[v0] Response status:", response.status)
+      if (!response.ok) {
+        return response.json().then((data) => {
+          throw new Error(data.detail || "Signup xatosi!")
+        })
+      }
+      return response.json()
+    })
+    .then((data) => {
+      // User ma'lumotlarini localStorage ga saqlash
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user))
+      console.log("[v0] User registered:", data.user)
+
+      showToast("✅ Akkaunt muvaffaqiyatli yaratildi! Dashboard ga o'ting...", "success")
+
+      // 1 soniya keyin dashboard ga o'tish
+      setTimeout(() => {
+        window.location.href = "dashboard.html"
+      }, 1000)
+
+      // Modal yopish
+      closeSignUp()
+      form.reset()
+    })
+    .catch((error) => {
+      console.error("[v0] Signup error:", error)
+      showToast(`❌ ${error.message}`, "error")
+    })
+}
+
+// Close modals when clicking outside
+window.addEventListener("click", (e) => {
+  const signInModal = document.getElementById("signInModal")
+  const signUpModal = document.getElementById("signUpModal")
+
+  if (e.target === signInModal) signInModal.classList.add("hidden")
+  if (e.target === signUpModal) signUpModal.classList.add("hidden")
 })
 
 // Contact Bank
