@@ -193,6 +193,8 @@ function handleSignIn(event) {
   const email = formData.get("email")
   const password = formData.get("password")
 
+  showToast("⏳ Log in qilinmoqda...", "success")
+
   console.log("[v0] Login attempt:", { email, password })
   console.log("[v0] API URL:", `${API_URL}/auth/login`)
 
@@ -211,18 +213,18 @@ function handleSignIn(event) {
       return response.json()
     })
     .then((data) => {
-      // User ma'lumotlarini localStorage ga saqlash
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user))
       console.log("[v0] User signed in:", data.user)
 
-      showToast("✅ Muvaffaqiyatli kirdingiz! Dashboard ga o'ting...", "success")
+      showToast("✅ Muvaffaqiyatli kirdingiz!", "success")
 
-      // 1 soniya keyin dashboard ga o'tish
       setTimeout(() => {
-        window.location.href = "dashboard.html"
-      }, 1000)
+        showToast("🚀 Dashboardga yo'naltirilyotgani...", "success")
+        setTimeout(() => {
+          window.location.href = "dashboard.html"
+        }, 500)
+      }, 1500)
 
-      // Modal yopish
       closeSignIn()
       form.reset()
     })
@@ -239,6 +241,8 @@ function handleSignUp(event) {
   const name = formData.get("name")
   const email = formData.get("email")
   const password = formData.get("password")
+
+  showToast("⏳ Ro'yhatga o'tinyotgani...", "success")
 
   console.log("[v0] Signup attempt:", { name, email, password })
   console.log("[v0] API URL:", `${API_URL}/auth/signup`)
@@ -258,18 +262,18 @@ function handleSignUp(event) {
       return response.json()
     })
     .then((data) => {
-      // User ma'lumotlarini localStorage ga saqlash
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user))
       console.log("[v0] User registered:", data.user)
 
-      showToast("✅ Akkaunt muvaffaqiyatli yaratildi! Dashboard ga o'ting...", "success")
+      showToast("✅ Akkaunt muvaffaqiyatli yaratildi!", "success")
 
-      // 1 soniya keyin dashboard ga o'tish
       setTimeout(() => {
-        window.location.href = "dashboard.html"
-      }, 1000)
+        showToast("🚀 Dashboardga yo'naltirilyotgani...", "success")
+        setTimeout(() => {
+          window.location.href = "dashboard.html"
+        }, 500)
+      }, 1500)
 
-      // Modal yopish
       closeSignUp()
       form.reset()
     })
