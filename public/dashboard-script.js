@@ -1,230 +1,199 @@
-// ========================
-// GLOBAL SETTINGS
-// ========================
-const API_URL = "https://finagro-ai.onrender.com";
-const STORAGE_KEY = "finagro_user";
+const API_URL = "https://finagro-ai.onrender.com"
+const STORAGE_KEY = "finagro_user"
 
+// Check authentication on page load
+window.addEventListener("DOMContentLoaded", () => {
+  const user = JSON.parse(localStorage.getItem(STORAGE_KEY))
 
-// ========================
-// TOAST NOTIFICATION
-// ========================
-function showToast(message, type = "success") {
-  const toast = document.createElement("div");
-  toast.className = `toast toast-${type}`;
-  toast.innerHTML = `
-    <div class="toast-content">
-      <span>${message}</span>
-      <button class="toast-close" onclick="this.parentElement.parentElement.remove()">×</button>
-    </div>
-  `;
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 5000);
+  if (!user) {
+    alert("Avval ro'yxatdan o'tishingiz kerak!")
+    window.location.href = "index.html"
+  } else {
+    document.getElementById("userName").textContent = user.name || "Fermer"
+    document.getElementById("userInitial").textContent = (user.name || "F").charAt(0).toUpperCase()
+    document.getElementById("sidebarFooterUserName").textContent = user.name || "Fermer"
+  }
+
+  switchModule("kredit")
+})
+
+function openModule(moduleName) {
+  document.getElementById("dashboard-home").classList.add("hidden")
+  document.getElementById("dashboard-container").classList.remove("hidden")
+  switchModule(moduleName)
 }
 
+function goHome() {
+  document.getElementById("dashboard-home").classList.remove("hidden")
+  document.getElementById("dashboard-container").classList.add("hidden")
+}
 
-// ========================
-// MOBILE MENU
-// ========================
-document.getElementById("menuToggle")?.addEventListener("click", () => {
-  document.getElementById("mobileMenu").classList.toggle("hidden");
-});
+function toggleSidebar() {
+  const sidebar = document.getElementById("sidebar")
+  sidebar.classList.toggle("closed")
+}
 
+function closeSidebar() {
+  const sidebar = document.getElementById("sidebar")
+  const overlay = document.getElementById("sidebarOverlay")
+  sidebar.classList.remove("show")
+  overlay.classList.remove("show")
+}
 
-// ========================
-// MODULE SWITCHING FIXED
-// ========================
+function closeSidebarOnMobile() {
+  if (window.innerWidth <= 768) {
+    closeSidebar()
+  }
+}
+
+function logout() {
+  localStorage.removeItem(STORAGE_KEY)
+  alert("Chiqishdan muvaffaq oldingiz!")
+  window.location.href = "index.html"
+}
+
 function switchModule(moduleName) {
-  // Hide all modules
   document.querySelectorAll(".module-content").forEach((mod) => {
     mod.classList.add("hidden")
   })
 
-  // Remove active class from all sidebar buttons
   document.querySelectorAll(".sidebar-link").forEach((btn) => {
     btn.classList.remove("active")
   })
 
-  // Show selected module
   const moduleElement = document.getElementById(`module-${moduleName}`)
   if (moduleElement) {
     moduleElement.classList.remove("hidden")
   }
 
-  // Highlight the clicked button
-  const activeBtn = document.querySelector(`.sidebar-link[data-module="${moduleName}"]`)
-  if (activeBtn) activeBtn.classList.add("active")
-
-  // Scroll to module
-  moduleElement?.scrollIntoView({ behavior: "smooth", block: "start" })
-
-  console.log("[v0] Module switched:", moduleName)
+  document.querySelector(`[data-module="${moduleName}"]`)?.classList.add("active")
 }
 
-// ========================
-// CREDIT CALCULATOR (FIXED KEYS)
-// ========================
+// Credit Calculator - Integrated with API
 document.getElementById("creditForm")?.addEventListener("submit", async (e) => {
-  e.preventDefault();
+  e.preventDefault()
 
-  const dataToSend = {
-    yer_maydoni_ha: Number(document.getElementById("yer").value),
-    ekin_turi: document.getElementById("ekin").value,
-    viloyat: document.getElementById("viloyat").value,
-    zichlik: Number(document.getElementById("zichlik").value)
-  };
+  const yer = Number.parseFloat(document.getElementById("yer").value)
+  const ekin = document.getElementById("ekin").value
+  const vil = document.getElementById("viloyat").value
+  const zichlik = Number.parseFloat(document.getElementById("zichlik").value)
 
   try {
     const response = await fetch(`${API_URL}/hosildan-kredit`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(dataToSend),
-    });
+      body: JSON.stringify({
+        yer_maydoni_ha: yer,
+        ekin_turi: ekin,
+        viloyat: vil,
+        zichlik: zichlik,
+      }),
+    })
 
-    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`)
+    }
 
-    const format = (n) => new Intl.NumberFormat("uz-UZ").format(Math.round(n));
+    const data = await response.json()
 
-    document.getElementById("resultHosil").textContent = format(data.taxminiy_hosil_t);
-    document.getElementById("resultDaromad").textContent = format(data.taxminiy_daromad);
-    document.getElementById("resultKredit").textContent = format(data.kredit_miqdori);
+    const formatNumber = (num) => new Intl.NumberFormat("uz-UZ").format(Math.round(num))
 
-    document.getElementById("creditResult").classList.remove("hidden");
+    document.getElementById("resultHosil").textContent = formatNumber(data.taxminiy_hosil_t || 0)
+    document.getElementById("resultDaromad").textContent = formatNumber(data.taxminiy_daromad || 0)
+    document.getElementById("resultKredit").textContent = formatNumber(data.kredit_miqdori || 0)
 
-  } catch (err) {
-    showToast("❌ Xatolik yuz berdi!", "error");
-    console.error(err);
+    document.getElementById("creditResult").classList.remove("hidden")
+  } catch (error) {
+    alert("Xatolik yuz berdi. Qayta urinib ko'ring. Backend ishlamayotgan bo'lishi mumkin.")
+    console.error("Credit calculation error:", error)
   }
-});
+})
 
-
-// ========================
-// CHAT FUNCTIONALITY
-// ========================
+// Chat Functionality - Integrated with API
 async function sendMessage() {
-  const chatInput = document.getElementById("chatInput");
-  const message = chatInput.value.trim();
-  if (!message) return;
+  const chatInput = document.getElementById("chatInput")
+  const message = chatInput.value.trim()
 
-  const chatBox = document.getElementById("chatBox");
+  if (!message) return
 
-  // User message
-  chatBox.innerHTML += `
-    <div class="flex justify-end">
-      <div class="bg-gradient-to-r from-green-500 to-blue-600 text-white px-4 py-2 rounded-lg max-w-xs rounded-br-none">
-        ${message}
-      </div>
+  // Add user message to chat
+  const chatBox = document.getElementById("chatBox")
+  const userMessageDiv = document.createElement("div")
+  userMessageDiv.className = "chat-message user-message"
+  userMessageDiv.innerHTML = `<div class="message-content">${message}</div>`
+  chatBox.appendChild(userMessageDiv)
+
+  chatInput.value = ""
+  chatBox.scrollTop = chatBox.scrollHeight
+
+  const loadingDiv = document.createElement("div")
+  loadingDiv.className = "chat-message bot-message"
+  loadingDiv.id = "loadingIndicator"
+  loadingDiv.innerHTML = `<div class="message-content">
+    <div class="typing-indicator">
+      <span class="typing-text">Javob tayyorlanmoqda</span>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
     </div>
-  `;
-  chatInput.value = "";
-  chatBox.scrollTop = chatBox.scrollHeight;
+  </div>`
+  chatBox.appendChild(loadingDiv)
+  chatBox.scrollTop = chatBox.scrollHeight
 
   try {
     const response = await fetch(`${API_URL}/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message }),
-    });
+      body: JSON.stringify({ message: message }),
+    })
 
-    const data = await response.json();
-
-    chatBox.innerHTML += `
-      <div class="flex justify-start">
-        <div class="bg-gray-200 text-gray-900 px-4 py-2 rounded-lg max-w-xs rounded-bl-none">
-          ${data.reply}
-        </div>
-      </div>
-    `;
-
-    // Add button if bank needed
-    if (data.bank_button) {
-      chatBox.innerHTML += `
-        <div class="flex justify-start mt-2">
-          <button onclick="contactBank()" class="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-600 text-white rounded-lg text-sm font-semibold hover:shadow-lg">
-            Agrobank bilan bog'lanish
-          </button>
-        </div>
-      `;
+    const loadingElement = document.getElementById("loadingIndicator")
+    if (loadingElement) {
+      loadingElement.remove()
     }
 
-    chatBox.scrollTop = chatBox.scrollHeight;
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`)
+    }
 
-  } catch (err) {
-    chatBox.innerHTML += `
-      <div class="flex justify-start">
-        <div class="bg-red-100 text-red-700 px-4 py-2 rounded-lg max-w-xs">
-          Xatolik yuz berdi. Qayta urinib ko'ring.
-        </div>
-      </div>
-    `;
+    const data = await response.json()
+
+    const aiMessageDiv = document.createElement("div")
+    aiMessageDiv.className = "chat-message bot-message"
+    aiMessageDiv.innerHTML = `<div class="message-content">${data.reply}</div>`
+    chatBox.appendChild(aiMessageDiv)
+
+    // Show bank button if needed
+    // if (data.bank_button) {
+    //   const bankBtnDiv = document.createElement("div")
+    //   bankBtnDiv.className = "flex justify-start mt-2"
+    //   bankBtnDiv.innerHTML = `<button onclick="contactBank()" class="px-4 py-2 bg-gradient-to-r from-emerald-600 to-green-600 text-red rounded-lg text-sm font-semibold hover:shadow-lg transition">Agrobank bilan bog'lanish</button>`
+    //   chatBox.appendChild(bankBtnDiv)
+    // }
+
+    chatBox.scrollTop = chatBox.scrollHeight
+  } catch (error) {
+    const loadingElement = document.getElementById("loadingIndicator")
+    if (loadingElement) {
+      loadingElement.remove()
+    }
+
+    const errorDiv = document.createElement("div")
+    errorDiv.className = "chat-message bot-message"
+    errorDiv.innerHTML = `<div class="message-content" style="background-color: #fee; color: #c00;">Xatolik yuz berdi. Qayta urinib ko'ring.</div>`
+    chatBox.appendChild(errorDiv)
+    console.error("Chat error:", error)
   }
 }
 
-// ENTER → Send
+// Allow Enter to send message
 document.getElementById("chatInput")?.addEventListener("keypress", (e) => {
-  if (e.key === "Enter") sendMessage();
-});
+  if (e.key === "Enter") {
+    sendMessage()
+  }
+})
 
-
-// ========================
-// AUTH FUNCTIONS
-// ========================
-function handleSignIn(e) {
-  e.preventDefault();
-  const form = e.target;
-
-  const payload = {
-    email: form.querySelector('input[type="email"]').value,
-    password: form.querySelector('input[type="password"]').value,
-  };
-
-  fetch(`${API_URL}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  })
-    .then(async (res) => {
-      if (!res.ok) throw new Error((await res.json()).detail);
-      return res.json();
-    })
-    .then((data) => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user));
-      showToast("Muvaffaqiyatli kirdingiz!", "success");
-      setTimeout(() => (window.location.href = "dashboard.html"), 800);
-    })
-    .catch((err) => showToast(err.message, "error"));
-}
-
-function handleSignUp(e) {
-  e.preventDefault();
-  const form = e.target;
-
-  const payload = {
-    name: form.querySelector('input[type="text"]').value,
-    email: form.querySelector('input[type="email"]').value,
-    password: form.querySelector('input[type="password"]').value,
-  };
-
-  fetch(`${API_URL}/auth/signup`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  })
-    .then(async (res) => {
-      if (!res.ok) throw new Error((await res.json()).detail);
-      return res.json();
-    })
-    .then((data) => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user));
-      showToast("Akkaunt yaratildi!", "success");
-      setTimeout(() => (window.location.href = "dashboard.html"), 800);
-    })
-    .catch((err) => showToast(err.message, "error"));
-}
-
-
-// ========================
-// CONTACT BANK
-// ========================
+// Contact Bank
 function contactBank() {
-  window.open("https://agrobank.uz", "_blank");
+  window.open("https://agrobank.uz", "_blank")
 }
