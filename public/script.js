@@ -298,20 +298,7 @@ function contactBank() {
 }
 
 function checkLoginAndNavigate() {
-  const user = localStorage.getItem(STORAGE_KEY)
-
-  if (!user) {
-    // User login qilinmagan - toast xabar ko'rsatish
-    showToast("⚠️ Iltimos, ro'yxatdan o'ting yoki akkauntga kiring!", "error")
-
-    // 1 soniya keyin Sign Up qismiga olib borish
-    setTimeout(() => {
-      openSignUp()
-    }, 500)
-  } else {
-    // User login qilingan - dashboard ga olib borish
-    window.location.href = "dashboard.html"
-  }
+  window.location.href = "dashboard.html"
 }
 
 document.addEventListener("DOMContentLoaded", () => {
