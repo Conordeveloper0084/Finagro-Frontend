@@ -189,14 +189,8 @@ function switchToSignUp() {
 function handleSignIn(event) {
   event.preventDefault()
   const form = event.target
-  const formData = new FormData(form)
-  const email = formData.get("email")
-  const password = formData.get("password")
-
-  showToast("⏳ Log in qilinmoqda...", "success")
-
-  console.log("[v0] Login attempt:", { email, password })
-  console.log("[v0] API URL:", `${API_URL}/auth/login`)
+  const email = form.querySelector('input[type="email"]').value
+  const password = form.querySelector('input[type="password"]').value
 
   fetch(`${API_URL}/auth/login`, {
     method: "POST",
@@ -204,7 +198,6 @@ function handleSignIn(event) {
     body: JSON.stringify({ email, password }),
   })
     .then((response) => {
-      console.log("[v0] Response status:", response.status)
       if (!response.ok) {
         return response.json().then((data) => {
           throw new Error(data.detail || "Login xatosi!")
@@ -213,18 +206,18 @@ function handleSignIn(event) {
       return response.json()
     })
     .then((data) => {
+      // User ma'lumotlarini localStorage ga saqlash
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user))
       console.log("[v0] User signed in:", data.user)
 
-      showToast("✅ Muvaffaqiyatli kirdingiz!", "success")
+      showToast("✅ Muvaffaqiyatli kirdingiz! Dashboard ga o'ting...", "success")
 
+      // 1 soniya keyin dashboard ga o'tish
       setTimeout(() => {
-        showToast("🚀 Dashboardga yo'naltirilyotgani...", "success")
-        setTimeout(() => {
-          window.location.href = "dashboard.html"
-        }, 500)
-      }, 1500)
+        window.location.href = "dashboard.html"
+      }, 1000)
 
+      // Modal yopish
       closeSignIn()
       form.reset()
     })
@@ -237,15 +230,9 @@ function handleSignIn(event) {
 function handleSignUp(event) {
   event.preventDefault()
   const form = event.target
-  const formData = new FormData(form)
-  const name = formData.get("name")
-  const email = formData.get("email")
-  const password = formData.get("password")
-
-  showToast("⏳ Ro'yhatga o'tinyotgani...", "success")
-
-  console.log("[v0] Signup attempt:", { name, email, password })
-  console.log("[v0] API URL:", `${API_URL}/auth/signup`)
+  const name = form.querySelector('input[type="text"]').value
+  const email = form.querySelector('input[type="email"]').value
+  const password = form.querySelector('input[type="password"]').value
 
   fetch(`${API_URL}/auth/signup`, {
     method: "POST",
@@ -253,7 +240,6 @@ function handleSignUp(event) {
     body: JSON.stringify({ name, email, password }),
   })
     .then((response) => {
-      console.log("[v0] Response status:", response.status)
       if (!response.ok) {
         return response.json().then((data) => {
           throw new Error(data.detail || "Signup xatosi!")
@@ -262,18 +248,18 @@ function handleSignUp(event) {
       return response.json()
     })
     .then((data) => {
+      // User ma'lumotlarini localStorage ga saqlash
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user))
       console.log("[v0] User registered:", data.user)
 
-      showToast("✅ Akkaunt muvaffaqiyatli yaratildi!", "success")
+      showToast("✅ Akkaunt muvaffaqiyatli yaratildi! Dashboard ga o'ting...", "success")
 
+      // 1 soniya keyin dashboard ga o'tish
       setTimeout(() => {
-        showToast("🚀 Dashboardga yo'naltirilyotgani...", "success")
-        setTimeout(() => {
-          window.location.href = "dashboard.html"
-        }, 500)
-      }, 1500)
+        window.location.href = "dashboard.html"
+      }, 1000)
 
+      // Modal yopish
       closeSignUp()
       form.reset()
     })
@@ -296,19 +282,3 @@ window.addEventListener("click", (e) => {
 function contactBank() {
   window.open("https://agrobank.uz", "_blank")
 }
-
-function checkLoginAndNavigate() {
-  window.location.href = "dashboard.html"
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  // Desktop "Boshlash" tugmasi
-  const startBtns = document.querySelectorAll('a[href="dashboard.html"]')
-
-  startBtns.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.preventDefault()
-      checkLoginAndNavigate()
-    })
-  })
-})
