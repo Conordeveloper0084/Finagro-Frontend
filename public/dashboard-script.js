@@ -1,4 +1,4 @@
-const API_URL = "https://finagro-ai.onrender.com"
+const API_URL = "https://finagroai-production.up.railway.app"
 const STORAGE_KEY = "finagro_user"
 
 // Check authentication on page load
